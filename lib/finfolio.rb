@@ -1,5 +1,6 @@
 require "finfolio/version"
+require "uri"
+require "net/https"
 
 module Finfolio
-  # Your code goes here...
 end
