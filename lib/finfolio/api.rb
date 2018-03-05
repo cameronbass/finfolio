@@ -4,9 +4,9 @@ require "json"
 
 require "finfolio/version"
 
-require "finfolio/api/client"
-  
+
 module Finfolio
   module API
+    require "finfolio/api/client"
   end
 end

@@ -3,6 +3,7 @@ require "json"
 
 require "finfolio/api"
 require "finfolio/version"
+require "finfolio/api/client"
 
 class Finfolio::API::Client
   def initialize(key, endpoint)
