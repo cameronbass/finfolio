@@ -2,8 +2,8 @@ require "net/https"
 require "json"
 
 require "finfolio/api"
+require "finfolio/api/manager"
 require "finfolio/version"
-require "finfolio/api/client"
 
 class Finfolio::API::Client
   def initialize(key, endpoint)
@@ -12,11 +12,22 @@ class Finfolio::API::Client
   end
 
   def managers
-    get("/api/manager?api_key=#{@key}")
+    response = get("/api/manager?api_key=#{@key}")
+
+    response.map do |manager|
+      Finfolio::API::Manager.new(manager)
+    end
   end
 
   def manager(id)
-    get("/api/manager/#{id}?api_key=#{@key}")
+    response = get("/api/manager/#{id}?api_key=#{@key}")
+    Finfolio::API::Manager.new(response)
+  end
+
+  def account(id)
+    response = get("/api/account/#{id}?api_key=#{@key}")
+
+    Finfolio::API::Account.new(response)
   end
 
   private
