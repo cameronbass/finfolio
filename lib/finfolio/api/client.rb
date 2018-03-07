@@ -21,6 +21,7 @@ class Finfolio::API::Client
 
   def manager(id)
     response = get("/api/manager/#{id}?api_key=#{@key}")
+
     Finfolio::API::Manager.new(response)
   end
 
@@ -28,6 +29,18 @@ class Finfolio::API::Client
     response = get("/api/account/#{id}?api_key=#{@key}")
 
     Finfolio::API::Account.new(response)
+  end
+
+  def account_status(id)
+    response = get("/api/account/status/#{id}?api_key=#{@key}")
+
+    Finfolio::API::AccountStatus.new(response)
+  end
+
+  def trading_model(id)
+    response = get("/api/trading/model/#{id}?api_key=#{@key}")
+
+    Finfolio::API::TradingModel.new(response)
   end
 
   private

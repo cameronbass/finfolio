@@ -74,7 +74,7 @@ describe Finfolio::API::Client do
       stub_request(:get, url).to_return(:body => response, :status => 200)
     end
 
-    it "returns a manager from the api" do
+    it "returns an account from the api" do
       client_response = client.account(id)
 
       expect(a_request(:get, url)).to have_been_made.once
