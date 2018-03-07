@@ -43,6 +43,30 @@ class Finfolio::API::Client
     Finfolio::API::TradingModel.new(response)
   end
 
+  def account_type(subtype)
+    response = get("/api/account/subtype/#{subtype}?api_key=#{@key}")
+
+    Finfolio::API::AccountType.new(response)
+  end
+
+  def fee_schedule(id)
+    response = get("/api/billing/feeschedule?api_key=#{@key}&#{id}")
+
+    Finfolio::API::FeeSchedule.new(response)
+  end
+
+  def account_value(id)
+    response = get("/api/calculation/run/#{id}?calculator1=MarketValue()&group1=Account()&api_key=#{@key}")
+
+    Finfolio::API::AccountValue.new(response)
+  end
+
+  def cash_value(id)
+    response = get("/api/calculation/run/#{id}?calculator1=MarketValue(filter: [SimpleSecType: Cash])&api_key=#{@key}")
+
+    Finfolio::API::CashValue.new(response)
+  end
+
   private
 
   def execute_request(request)
