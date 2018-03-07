@@ -29,13 +29,17 @@ class Finfolio::API::Client
   def manager(id)
     response = get("/api/manager/#{id}?api_key=#{@key}")
 
-    Finfolio::API::Manager.new(response)
+    response.map do |manager|
+      Finfolio::API::Manager.new(manager)
+    end
   end
 
   def account(id)
     response = get("/api/account/#{id}?api_key=#{@key}")
 
-    Finfolio::API::Account.new(response)
+    response.map do |account|
+      Finfolio::API::Account.new(account)
+    end
   end
 
   def account_status(id)
@@ -44,34 +48,42 @@ class Finfolio::API::Client
     Finfolio::API::AccountStatus.new(response)
   end
 
-  def trading_model(id)
-    response = get("/api/trading/model/#{id}?api_key=#{@key}")
-
-    Finfolio::API::TradingModel.new(response)
-  end
-
-  def account_type(subtype)
-    response = get("/api/account/subtype/#{subtype}?api_key=#{@key}")
+  def account_type(sub_type)
+    response = get("/api/account/subtype/#{sub_type}?api_key=#{@key}")
 
     Finfolio::API::AccountType.new(response)
-  end
-
-  def fee_schedule(id)
-    response = get("/api/billing/feeschedule?api_key=#{@key}&#{id}")
-
-    Finfolio::API::FeeSchedule.new(response)
   end
 
   def account_value(id)
     response = get("/api/calculation/run/#{id}?calculator1=MarketValue()&group1=Account()&api_key=#{@key}")
 
-    Finfolio::API::AccountValue.new(response)
+    response.map do |account_value|
+      Finfolio::API::AccountValue.new(account_value)
+    end
+  end
+
+  def trading_model(id)
+    response = get("/api/trading/model/#{id}?api_key=#{@key}")
+
+    response.map do |trading_model|
+      Finfolio::API::TradingModel.new(trading_model)
+    end
+  end
+
+  def fee_schedule(id)
+    response = get("/api/billing/feeschedule?api_key=#{@key}&#{id}")
+
+    response.map do |fee_schedule|
+      Finfolio::API::FeeSchedule.new(fee_schedule)
+    end
   end
 
   def cash_value(id)
     response = get("/api/calculation/run/#{id}?calculator1=MarketValue(filter: [SimpleSecType: Cash])&api_key=#{@key}")
 
-    Finfolio::API::CashValue.new(response)
+    response.map do |cash_value|
+      Finfolio::API::CashValue.new(cash_value)
+    end
   end
 
   private

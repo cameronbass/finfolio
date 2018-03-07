@@ -37,14 +37,16 @@ describe Finfolio::API::Client do
   end
 
   describe "#manager" do
-    let(:id)  { 123456789 }
+    let(:id)  { "123456789" }
     let(:url) { "https://test.finfolio.com/api/manager/#{id}?api_key=12345" }
 
     let(:response) {
-      '{
-         "ID": "123456789",
-         "RepCode": "ACFR"
-      }'
+      '[
+         {
+           "ID": "123456789",
+           "RepCode": "ACFR"
+         }
+       ]'
     }
 
     before do
@@ -58,14 +60,16 @@ describe Finfolio::API::Client do
   end
 
   describe "#account" do
-    let(:id)  { 123456789 }
+    let(:id)  { "123456789" }
     let(:url) { "https://test.finfolio.com/api/account/#{id}?api_key=12345" }
 
     let(:response) {
-      '{
-         "ID": "123456789",
-         "Name": "Test, Name"
-      }'
+      '[
+        {
+           "ID": "123456789",
+           "Name": "Test, Name"
+        }
+      ]'
     }
 
     before do
@@ -76,17 +80,23 @@ describe Finfolio::API::Client do
       client.account(id)
       expect(a_request(:get, url)).to have_been_made.once
     end
+
+    it "returns an Account object" do
+      client_response = client.account(id)
+
+      expect(client_response.first).to be_a(Finfolio::API::Account)
+    end
   end
 
   describe "#account_status" do
-    let(:id)  { 123456789 }
+    let(:id)  { "123456789" }
     let(:url) { "https://test.finfolio.com/api/account/status/#{id}?api_key=12345" }
 
     let(:response) {
       '{
           "ID": "c2354d53d3",
           "DisplayValue": "Open"
-      }'
+       }'
     }
 
     before do
@@ -107,14 +117,16 @@ describe Finfolio::API::Client do
   end
 
   describe "#trading_model" do
-    let(:id)  { 123456789 }
+    let(:id)  { "123456789" }
     let(:url) { "https://test.finfolio.com/api/trading/model/#{id}?api_key=12345" }
 
     let(:response) {
-      '{
+      '[
+        {
           "ID": "c2354d53d3",
           "Name": "Individul"
-      }'
+        }
+      ]'
     }
 
     before do
@@ -130,7 +142,7 @@ describe Finfolio::API::Client do
     it "returns an TradingModel object" do
       client_response = client.trading_model(id)
 
-      expect(client_response).to be_a(Finfolio::API::TradingModel)
+      expect(client_response.first).to be_a(Finfolio::API::TradingModel)
     end
   end
 
@@ -140,9 +152,9 @@ describe Finfolio::API::Client do
 
     let(:response) {
       '{
-          "SubType": "ACTINDIVIDUAL",
-          "Name": "Individul"
-      }'
+        "SubType": "ACTINDIVIDUAL",
+        "Name": "Individul"
+       }'
     }
 
     before do
@@ -163,14 +175,16 @@ describe Finfolio::API::Client do
   end
 
   describe "#fee_schedule" do
-    let(:id)  { 123456789 }
+    let(:id)  { "123456789" }
     let(:url) { "https://test.finfolio.com/api/billing/feeschedule?api_key=12345&#{id}" }
 
     let(:response) {
-      '{
+      '[
+        {
           "ID": "a1b2c3d4",
           "Description": "100%"
-      }'
+        }
+      ]'
     }
 
     before do
@@ -186,18 +200,20 @@ describe Finfolio::API::Client do
     it "returns a FeeSchedule object" do
       client_response = client.fee_schedule(id)
 
-      expect(client_response).to be_a(Finfolio::API::FeeSchedule)
+      expect(client_response.first).to be_a(Finfolio::API::FeeSchedule)
     end
   end
 
   describe "#account_value" do
-    let(:id)  { 123456789 }
+    let(:id)  { "123456789" }
     let(:url) { "https://test.finfolio.com/api/calculation/run/#{id}?calculator1=MarketValue()&group1=Account()&api_key=12345" }
 
     let(:response) {
-      '{
+      '[
+        {
           "Calculator1_FormattedResult": "100%"
-      }'
+        }
+      ]'
     }
 
     before do
@@ -213,18 +229,20 @@ describe Finfolio::API::Client do
     it "returns an AccountValue object" do
       client_response = client.account_value(id)
 
-      expect(client_response).to be_a(Finfolio::API::AccountValue)
+      expect(client_response.first).to be_a(Finfolio::API::AccountValue)
     end
   end
 
   describe "#cash_value" do
-    let(:id)  { 123456789 }
+    let(:id)  { "123456789" }
     let(:url) { "https://test.finfolio.com/api/calculation/run/#{id}?calculator1=MarketValue(filter: [SimpleSecType: Cash])&api_key=12345" }
 
     let(:response) {
-      '{
+      '[
+        {
           "Calculator1_FormattedResult": "100%"
-      }'
+        }
+      ]'
     }
 
     before do
@@ -240,7 +258,7 @@ describe Finfolio::API::Client do
     it "returns an CashValue object" do
       client_response = client.cash_value(id)
 
-      expect(client_response).to be_a(Finfolio::API::CashValue)
+      expect(client_response.first).to be_a(Finfolio::API::CashValue)
     end
   end
 end
