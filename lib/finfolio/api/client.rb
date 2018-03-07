@@ -3,6 +3,13 @@ require "json"
 
 require "finfolio/api"
 require "finfolio/api/manager"
+require "finfolio/api/account"
+require "finfolio/api/account_status"
+require "finfolio/api/account_type"
+require "finfolio/api/account_value"
+require "finfolio/api/fee_schedule"
+require "finfolio/api/trading_model"
+require "finfolio/api/cash_value"
 require "finfolio/version"
 
 class Finfolio::API::Client
