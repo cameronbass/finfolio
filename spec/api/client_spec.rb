@@ -84,7 +84,7 @@ describe Finfolio::API::Client do
     it "returns an Account object" do
       client_response = client.account(id)
 
-      expect(client_response.first).to be_a(Finfolio::API::Account)
+      expect(client_response).to be_a(Finfolio::API::Account)
     end
   end
 
@@ -118,6 +118,7 @@ describe Finfolio::API::Client do
 
   describe "#trading_model" do
     let(:id)  { "123456789" }
+    let(:params) { { api_key: "12345" } }
     let(:url) { "https://test.finfolio.com/api/trading/model/#{id}?api_key=12345" }
 
     let(:response) {
@@ -134,15 +135,15 @@ describe Finfolio::API::Client do
     end
 
     it "returns a trading model from the api" do
-      client.trading_model(id)
+      client.trading_model(id, params)
 
       expect(a_request(:get, url)).to have_been_made.once
     end
 
     it "returns an TradingModel object" do
-      client_response = client.trading_model(id)
+      client_response = client.trading_model(id, params)
 
-      expect(client_response.first).to be_a(Finfolio::API::TradingModel)
+      expect(client_response).to be_a(Finfolio::API::TradingModel)
     end
   end
 
@@ -175,8 +176,8 @@ describe Finfolio::API::Client do
   end
 
   describe "#fee_schedule" do
-    let(:id)  { "123456789" }
-    let(:url) { "https://test.finfolio.com/api/billing/feeschedule?api_key=12345&#{id}" }
+    let(:params)  { { id: "123456789" } }
+    let(:url) { "https://test.finfolio.com/api/billing/feeschedule?id=123456789&api_key=12345" }
 
     let(:response) {
       '[
@@ -192,20 +193,21 @@ describe Finfolio::API::Client do
     end
 
     it "returns a fee schedule from the api" do
-      client.fee_schedule(id)
+      client.fee_schedule(params)
 
       expect(a_request(:get, url)).to have_been_made.once
     end
 
     it "returns a FeeSchedule object" do
-      client_response = client.fee_schedule(id)
+      client_response = client.fee_schedule(params)
 
-      expect(client_response.first).to be_a(Finfolio::API::FeeSchedule)
+      expect(client_response).to be_a(Finfolio::API::FeeSchedule)
     end
   end
 
   describe "#account_value" do
     let(:id)  { "123456789" }
+    let(:params) { { calculator1: "MarketValue()", group1: "Account()" } }
     let(:url) { "https://test.finfolio.com/api/calculation/run/#{id}?calculator1=MarketValue()&group1=Account()&api_key=12345" }
 
     let(:response) {
@@ -221,20 +223,21 @@ describe Finfolio::API::Client do
     end
 
     it "returns an account value from the api" do
-      client.account_value(id)
+      client.account_value(id, params)
 
       expect(a_request(:get, url)).to have_been_made.once
     end
 
     it "returns an AccountValue object" do
-      client_response = client.account_value(id)
+      client_response = client.account_value(id, params)
 
-      expect(client_response.first).to be_a(Finfolio::API::AccountValue)
+      expect(client_response).to be_a(Finfolio::API::AccountValue)
     end
   end
 
   describe "#cash_value" do
     let(:id)  { "123456789" }
+    let(:params) { { calculator1: "MarketValue(filter: [SimpleSecType: Cash])" } }
     let(:url) { "https://test.finfolio.com/api/calculation/run/#{id}?calculator1=MarketValue(filter: [SimpleSecType: Cash])&api_key=12345" }
 
     let(:response) {
@@ -250,15 +253,15 @@ describe Finfolio::API::Client do
     end
 
     it "returns a cash value from the api" do
-      client.cash_value(id)
+      client.cash_value(id, params)
 
       expect(a_request(:get, url)).to have_been_made.once
     end
 
     it "returns an CashValue object" do
-      client_response = client.cash_value(id)
+      client_response = client.cash_value(id, params)
 
-      expect(client_response.first).to be_a(Finfolio::API::CashValue)
+      expect(client_response).to be_a(Finfolio::API::CashValue)
     end
   end
 end

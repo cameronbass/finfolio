@@ -18,75 +18,75 @@ class Finfolio::API::Client
     @endpoint = URI.parse(endpoint).freeze
   end
 
-  def managers
-    response = get("/api/manager?api_key=#{@key}")
+  def managers(params = {})
+    response = get("/api/manager", params)
 
     response.map do |manager|
       Finfolio::API::Manager.new(manager)
     end
   end
 
-  def manager(id)
-    response = get("/api/manager/#{id}?api_key=#{@key}")
+  def manager(id, params = {})
+    response = get("/api/manager/#{id}", params)
+    response = deconstruct_array(response)
 
-    response.map do |manager|
-      Finfolio::API::Manager.new(manager)
-    end
+    Finfolio::API::Manager.new(response)
   end
 
-  def account(id)
-    response = get("/api/account/#{id}?api_key=#{@key}")
+  def account(id, params = {})
+    response = get("/api/account/#{id}", params)
+    response = deconstruct_array(response)
 
-    response.map do |account|
-      Finfolio::API::Account.new(account)
-    end
+    Finfolio::API::Account.new(response)
   end
 
-  def account_status(id)
-    response = get("/api/account/status/#{id}?api_key=#{@key}")
+  def account_status(id, params = {})
+    response = get("/api/account/status/#{id}", params)
 
     Finfolio::API::AccountStatus.new(response)
   end
 
-  def account_type(sub_type)
-    response = get("/api/account/subtype/#{sub_type}?api_key=#{@key}")
+  def account_type(sub_type, params = {})
+    response = get("/api/account/subtype/#{sub_type}", params)
 
     Finfolio::API::AccountType.new(response)
   end
 
-  def account_value(id)
-    response = get("/api/calculation/run/#{id}?calculator1=MarketValue()&group1=Account()&api_key=#{@key}")
+  def account_value(id, params = {})
+    response = get("/api/calculation/run/#{id}", params)
+    response = deconstruct_array(response)
 
-    response.map do |account_value|
-      Finfolio::API::AccountValue.new(account_value)
-    end
+    Finfolio::API::AccountValue.new(response)
   end
 
-  def trading_model(id)
-    response = get("/api/trading/model/#{id}?api_key=#{@key}")
+  def trading_model(id, params = {})
+    response = get("/api/trading/model/#{id}", params)
+    response = deconstruct_array(response)
 
-    response.map do |trading_model|
-      Finfolio::API::TradingModel.new(trading_model)
-    end
+    Finfolio::API::TradingModel.new(response)
   end
 
-  def fee_schedule(id)
-    response = get("/api/billing/feeschedule?api_key=#{@key}&#{id}")
+  def fee_schedule(params = {})
+    response = get("/api/billing/feeschedule", params)
+    response = deconstruct_array(response)
 
-    response.map do |fee_schedule|
-      Finfolio::API::FeeSchedule.new(fee_schedule)
-    end
+    Finfolio::API::FeeSchedule.new(response)
   end
 
-  def cash_value(id)
-    response = get("/api/calculation/run/#{id}?calculator1=MarketValue(filter: [SimpleSecType: Cash])&api_key=#{@key}")
+  def cash_value(id, params = {})
+    response = get("/api/calculation/run/#{id}", params)
+    response = deconstruct_array(response)
 
-    response.map do |cash_value|
-      Finfolio::API::CashValue.new(cash_value)
-    end
+    Finfolio::API::CashValue.new(response)
   end
 
   private
+
+  def deconstruct_array(response)
+    return unless response.is_a?(Array)
+
+    response.first
+  end
 
   def execute_request(request)
     http_options = {
@@ -116,10 +116,13 @@ class Finfolio::API::Client
     end
   end
 
-  def get(path)
-    path = URI.encode(path)
-    request = Net::HTTP::Get.new(path)
+  def get(path, params = {})
+    uri = URI(path)
 
+    params[:api_key] = @key
+    uri.query = URI.encode_www_form(params)
+
+    request = Net::HTTP::Get.new(uri.to_s)
     execute_request(request)
   end
 end
