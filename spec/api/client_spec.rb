@@ -264,4 +264,24 @@ describe Finfolio::API::Client do
       expect(client_response).to be_a(Finfolio::API::CashValue)
     end
   end
+
+  describe "Unauthorized API Key" do
+    let(:stub_url) { "https://test.finfolio.com/api/manager?api_key=12345" }
+
+    let(:response) {
+      '{
+        "Title": "Hit a Snag!",
+        "FriendlyMessage": "An error occurred while attempting to get an object.",
+        "DeveloperMessage": "Exception occurred during a GET on endpoint, This request does not contain a valid identity."
+      }'
+    }
+
+    before do
+      stub_request(:get, stub_url).to_return(body: response, status: 500)
+    end
+
+    it "raises Error if" do
+      expect { client.managers }.to raise_error(Finfolio::API::Error)
+    end
+  end
 end

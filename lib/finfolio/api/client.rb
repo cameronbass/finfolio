@@ -10,7 +10,9 @@ require "finfolio/api/account_value"
 require "finfolio/api/fee_schedule"
 require "finfolio/api/trading_model"
 require "finfolio/api/cash_value"
+require "finfolio/api/error"
 require "finfolio/version"
+require "pry"
 
 class Finfolio::API::Client
   def initialize(key, endpoint)
@@ -109,10 +111,12 @@ class Finfolio::API::Client
       nil
     when Net::HTTPSuccess
       JSON.parse(response.body)
+    when Net::HTTPInternalServerError
+      raise ::Finfolio::API::InternalServerError.new(JSON.parse(response.body), response.code)
     else
       error = JSON.parse(response.body)
 
-      raise error
+      raise Finfolio::API::Error.new(error, response.code)
     end
   end
 
