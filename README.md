@@ -43,7 +43,7 @@ client.account(account_id)
 
 ### Customize the response
 
-Finfolio gives us the oppurtunity to customize the scope of the response. (Customization varies per endpoint)
+Finfolio gives us the oppurtunity to customize the scope of the response. Customization changes per endpoint, Refer to the official Finfolio docs to fully understand what response customization is offered to you.
 
 ```ruby
 client.account(account_id, fields: "Name, FileAs")
