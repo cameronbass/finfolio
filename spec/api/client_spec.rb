@@ -265,6 +265,42 @@ describe Finfolio::API::Client do
     end
   end
 
+  describe "#view" do
+    let(:id) { "123456789" }
+    let(:params) { { view: "AccountsByManager", columns: "Name, FolioNumber, ID", filter: "ManagerID='5678' OR ManagerID='1234'" } }
+    let(:url) { "https://test.finfolio.com/api/view?view=AccountsByManager&columns=Name%2C%20FolioNumber%2C%20ID&filter=ManagerID%3D'5678'%20OR%20ManagerID%3D'1234'&api_key=12345" }
+
+    let(:response) {
+      '[
+        {
+          "Name": "Test Name",
+          "FolioNumber": "12345",
+          "ID": "A1B2"
+        },
+        {
+          "Name": "Another Test Name",
+          "FolioNumber": "67890",
+          "ID": "C3D4"
+        }
+      ]'
+    }
+
+    before do
+      stub_request(:get, url).to_return(body: response, status: 200)
+    end
+
+    it "returns the array of accounts" do
+      expect(client.view(params)).to be_a(Array)
+    end
+
+    it "returns the list of accounts from the api" do
+      response = client.view(params, ["5678", "1234"])
+
+      expect(a_request(:get, url)).to have_been_made.once
+      expect(response.first).to be_a(Finfolio::API::Account)
+    end
+  end
+
   describe "Unauthorized API Key" do
     let(:stub_url) { "https://test.finfolio.com/api/manager?api_key=12345" }
 

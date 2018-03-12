@@ -82,6 +82,17 @@ class Finfolio::API::Client
     Finfolio::API::CashValue.new(response)
   end
 
+  def view(params = {}, ids)
+    if ids.any?
+      params[:filter] = ids.map { |id| "ManagerID='#{id}'" }.join(" OR ")
+    end
+
+    response = get("/api/view", params)
+    response.map do |account|
+      Finfolio::API::Account.new(account)
+    end
+  end
+
   private
 
   def deconstruct_array(response)
