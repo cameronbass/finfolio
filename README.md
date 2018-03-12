@@ -51,6 +51,20 @@ client.account(account_id, fields: "Name, FileAs")
 
 This will only respond with the "Name" and the "FileAs" fields of the found account.
 
+
+## Supported API Resources (GET Only)
+
+```
+1. /api/manager
+2. /api/manager/:id
+3. /api/account/:id
+4. /api/account/status/:id
+5. /api/account/subtype/:sub_type
+6. /api/calculation/run/:id
+7. /api/trading/model/:id
+8. /api/view
+```
+
 ## Notes:
 
 This API client is largely a work in progress, this project was started with the need of a refactor for an internal project. Many endpoints are not supported and even particular fields of endpoints are not supported. Please feel free to make a pull request with any functionality you may need for your project. My hope is that we can consistenly add more and better functionality to the project as time goes on. Please ensure to look over the code base for supported endpoints, fields and additional documentation.
