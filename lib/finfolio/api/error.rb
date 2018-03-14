@@ -1,4 +1,5 @@
 module Finfolio::API
+  # :nodoc:
   class Error < StandardError
     attr_reader :code
 

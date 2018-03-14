@@ -1,19 +1,20 @@
-require "net/https"
-require "json"
+require 'net/https'
+require 'json'
 
-require "finfolio/api"
-require "finfolio/api/manager"
-require "finfolio/api/account"
-require "finfolio/api/account_status"
-require "finfolio/api/account_type"
-require "finfolio/api/account_value"
-require "finfolio/api/fee_schedule"
-require "finfolio/api/trading_model"
-require "finfolio/api/cash_value"
-require "finfolio/api/error"
-require "finfolio/version"
+require 'finfolio/api'
+require 'finfolio/api/manager'
+require 'finfolio/api/account'
+require 'finfolio/api/account_status'
+require 'finfolio/api/account_type'
+require 'finfolio/api/account_value'
+require 'finfolio/api/fee_schedule'
+require 'finfolio/api/trading_model'
+require 'finfolio/api/cash_value'
+require 'finfolio/api/error'
+require 'finfolio/version'
 
-class Finfolio::API::Client
+# :nodoc:
+class Finfolio::API::Client # rubocop:disable Metrics/ClassLength
   # Initializes a new Client object
   #
   # @param key      [String]
@@ -27,9 +28,9 @@ class Finfolio::API::Client
   # Get the list of Managers
   #
   # @param params [Hash] customize fields
-  # @return [Array<Finfolio::API::Manager>] all the managers within api key's container.
+  # @return [Array<Finfolio::API::Manager>] all the managers.
   def managers(params = {})
-    response = get("/api/manager", params)
+    response = get('/api/manager', params)
 
     response.map do |manager|
       Finfolio::API::Manager.new(manager)
@@ -106,6 +107,7 @@ class Finfolio::API::Client
   #
   # @return [Finfolio::API::TradingModel]
   def trading_model(id, params = {})
+    return 'Null' if id.nil?
     response = get("/api/trading/model/#{id}", params)
     response = deconstruct_array(response)
 
@@ -118,7 +120,7 @@ class Finfolio::API::Client
   #
   # @return [Finfolio::API::FeeSchedule]
   def fee_schedule(params = {})
-    response = get("/api/billing/feeschedule", params)
+    response = get('/api/billing/feeschedule', params)
     response = deconstruct_array(response)
 
     Finfolio::API::FeeSchedule.new(response)
@@ -140,16 +142,15 @@ class Finfolio::API::Client
   # Build a custom query from the Finfolio DB
   #
   # @param params [Hash]
-  # @param ids [Array] use this to return the accounts from more than one manager
+  # @param ids [Array] use this to return the accounts for multiple managers
   #
   # @return [Finfolio::API::Account]
-  # NOTE: This should be updated to allow different objects to be returned from Finfolio
-  def view(params = {}, ids)
+  def view(ids, params = {})
     if ids.any?
-      params[:filter] = ids.map { |id| "ManagerID='#{id}'" }.join(" OR ")
+      params[:filter] = ids.map { |id| "ManagerID='#{id}'" }.join(' OR ')
     end
 
-    response = get("/api/view", params)
+    response = get('/api/view', params)
     response.map do |account|
       Finfolio::API::Account.new(account)
     end
@@ -165,13 +166,11 @@ class Finfolio::API::Client
 
   def execute_request(request)
     http_options = {
-      use_ssl: @endpoint.scheme == "https",
+      use_ssl: @endpoint.scheme == 'https'
     }
 
     Net::HTTP.start(@endpoint.host, @endpoint.port, http_options) do |http|
-      if request.body
-        request["Content-Type"] = "application/json"
-      end
+      request['Content-Type'] = 'application/json' if request.body
 
       response = http.request(request)
       evaluate_response(response)
@@ -185,12 +184,22 @@ class Finfolio::API::Client
     when Net::HTTPSuccess
       JSON.parse(response.body)
     when Net::HTTPInternalServerError
-      raise ::Finfolio::API::InternalServerError.new(JSON.parse(response.body), response.code)
+      raise_internal_server_error(response.body, response.code)
     else
-      error = JSON.parse(response.body)
-
-      raise Finfolio::API::Error.new(error, response.code)
+      raise_error(response.body, response.code)
     end
+  end
+
+  def raise_error(error, code)
+    error = JSON.parse(error)
+
+    raise Finfolio::API::Error.new(error, code)
+  end
+
+  def raise_internal_server_error(error, code)
+    raise ::Finfolio::API::InternalServerError.new(
+      JSON.parse(error), code
+    )
   end
 
   def get(path, params = {})

@@ -1,12 +1,10 @@
-require "finfolio"
-require "net/https"
-require "json"
+require 'finfolio'
+require 'net/https'
+require 'json'
 
-require "finfolio/version"
+require 'finfolio/version'
 
-
-module Finfolio
-  module API
-    require "finfolio/api/client"
-  end
+# :nodoc:
+module Finfolio::API
+  require 'finfolio/api/client'
 end
