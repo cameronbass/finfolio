@@ -1,3 +1,4 @@
+# :nodoc:
 class Finfolio::API::Account
   attr_accessor :id
   attr_accessor :name
@@ -8,12 +9,12 @@ class Finfolio::API::Account
   attr_accessor :folio_number
 
   def initialize(payload)
-    @id                = payload["ID"]
-    @name              = payload["Name"]
-    @folio_number      = payload["FolioNumber"]
-    @fee_schedule_id   = payload["FeeScheduleID"]
-    @account_status_id = payload["AccountStatusID"]
-    @sub_type          = payload["SubType"]
-    @model_id          = payload["ModelID"]
+    @id                = payload['ID']
+    @name              = payload['Name']
+    @folio_number      = payload['FolioNumber']
+    @fee_schedule_id   = payload['FeeScheduleID']
+    @account_status_id = payload['AccountStatusID']
+    @sub_type          = payload['SubType']
+    @model_id          = payload['ModelID']
   end
 end
