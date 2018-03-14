@@ -1,3 +1,5 @@
+![Build Status](https://travis-ci.org/cameronbass/finfolio.svg?branch=master)
+
 # Finfolio
 
 Ruby API Client for easy interaction with Finfolio data. 
