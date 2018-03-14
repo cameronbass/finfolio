@@ -281,7 +281,7 @@ describe Finfolio::API::Client do
           "Name": "Test Name", "FolioNumber": "12345", "ID": "A1B2"
         },
         {
-          "Name": "Another Test Name", "FolioNumber": "67890", "ID": "C3D4"
+          "Name": "Another Test Name", "FolioNumber": "67890", "ID": "C3D4" 
         }
       ]'
     end
